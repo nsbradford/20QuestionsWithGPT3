@@ -1,9 +1,10 @@
+import { faArrowUp, faCoffee, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
 import styles from '../styles/Home.module.scss';
-import typingIndicatorStyles from '../styles/TypingIndicator.module.scss'
+import typingIndicatorStyles from '../styles/TypingIndicator.module.scss';
 import { dummyMessages, Message, MessageType } from './Utils';
-
 
 export function Game() {
   const [messages, setMessages] = React.useState(dummyMessages);
@@ -52,23 +53,23 @@ export function Game() {
   // https://stackoverflow.com/questions/68684123/why-does-setstate-callback-throw-an-error-state-updates-from-the-usestate-an
   React.useEffect(() => {
     if (messages.at(-1)?.messageType == MessageType.User) {
-      sendMessageToServer();  
+      sendMessageToServer();
     }
-  }, [messages])
+  }, [messages]);
 
   const filterRawResponseData = (raw: string) => {
     return raw;
   };
 
-  const sendMessageToServer = useCallback(async () => { 
-    console.log(`# of messages: ${messages.length}`)
+  const sendMessageToServer = useCallback(async () => {
+    console.log(`# of messages: ${messages.length}`);
     setWaiting(true);
-    const response = await fetch("/api/generate", {
-      method: "POST",
+    const response = await fetch('/api/generate', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ messages: messages, isStub: true}),
+      body: JSON.stringify({ messages: messages, isStub: true }),
     });
     const data = await response.json();
     setWaiting(false);
@@ -79,7 +80,7 @@ export function Game() {
       content: filterRawResponseData(data.result),
     };
     setMessages(messages.concat(newMessage));
-    console.log(`Set new message: ${newMessage.rawContent}`)
+    console.log(`Set new message: ${newMessage.rawContent}`);
   }, [messages]);
 
   const formik = useFormik({
@@ -97,7 +98,7 @@ export function Game() {
       };
 
       setMessages(messages.concat(newMessage));
-      console.log(`Set new message: ${newMessage.rawContent}`)
+      console.log(`Set new message: ${newMessage.rawContent}`);
       actions.resetForm();
     },
   });
@@ -106,15 +107,14 @@ export function Game() {
     <div className="flex flex-col justify-center place-content-center align-center">
       <div className="m-5 sm:m-auto p-3 outline outline-2 outline-slate-200 rounded-lg sm:max-w-[50%] lg:w-96">
         <ul className="flex flex-col">{renderedMessages}</ul>
-        {waiting && 
+        {waiting && (
           // https://jsfiddle.net/Arlina/gtttgo93/
           <div className={`${typingIndicatorStyles.typingindicator} m-1`}>
             <span></span>
             <span></span>
             <span></span>
           </div>
-        }
-
+        )}
       </div>
 
       <form onSubmit={formik.handleSubmit} className="m-4 flex place-content-center">
@@ -134,21 +134,23 @@ export function Game() {
           maxLength={maxlength}
         />
 
-
         <button
           type="submit"
-          disabled={!formik.isValid || !formik.dirty}
+          disabled={!formik.isValid || !formik.dirty || waiting}
           className="bg-violet-400 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none disabled:bg-slate-200 shadow focus:shadow-lg">
-          <i className="fa-solid fa-arrow-up fa-fw"></i>
+          {/* <i className="fa-solid fa-arrow-up fa-fw"></i> */}
+          <FontAwesomeIcon icon={faArrowUp} /* size="sm" fixedWidth */ className="text-base" />
         </button>
-        {/* <FontAwesomeIcon icon={faArrowUp}/> */}
 
         {/* <div className="block">{formik.errors.humanInput}</div> */}
       </form>
 
-      {/* <button onClick={resetMessages} className="bg-slate-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-              <FontAwesomeIcon icon={faRotateRight} className="fa-fw"/>
-              Reset</button> */}
+      <button
+        onClick={resetMessages}
+        className="bg-slate-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
+        Reset
+      </button>
 
       {/* <button onClick={reportIssue} className="bg-red-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Report issue</button> */}
 

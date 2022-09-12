@@ -41,4 +41,3 @@ export const dummyMessages: Message[] = [
   //     'Is it an animal? Is it an animal? Is it an animal? Is it an animal? Is it an animal? Is it an animal? Is it an animal? Is it an animal? ',
   // },
 ];
-
