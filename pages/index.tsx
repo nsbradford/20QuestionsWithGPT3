@@ -3,6 +3,11 @@ import Head from 'next/head';
 import styles from '../styles/Home.module.scss';
 import react from 'react';
 import React from 'react';
+import { useFormik } from 'formik';
+import { faRotateRight, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+
 
 export function NavBar() {
   return (
@@ -36,7 +41,9 @@ export function NavBar() {
 
 
 
-export type UseState<S> = [S | undefined, react.Dispatch<react.SetStateAction<S | undefined>>];
+export type UseStateUndefined<S> = [S | undefined, react.Dispatch<react.SetStateAction<S | undefined>>];
+
+export type UseState<S> = [S, react.Dispatch<react.SetStateAction<S>>];
 
 enum MessageType {
   User,
@@ -74,31 +81,106 @@ const dummyMessages: Message[] = [
 
 
 export function Game() {
-  const [messages, setMessages]: UseState<Message[]> = React.useState();
+  const [messages, setMessages] = React.useState(dummyMessages);
+  // const totalMessages = messages.length
+
   // TODO calculate number of valid messages, win condition, etc
   // setMessages(dummyMessages);
 
   const renderedMessages = (
-    dummyMessages.map((message) => { 
+    messages.map((message) => { 
       const mystyle = message.messageType === MessageType.User ? styles.bubbleright : styles.bubbleleft;
       return <li key={message.index}><div className={mystyle}>{message.content}</div></li>
     })
   );
 
+  const resetMessages = () => {
+    setMessages(dummyMessages);
+  };
+  const reportIssue = () => {
+      alert(`A report has been sent to our engineering team, we'll take a look.`);
+  };
+
+
+  const maxlength = 30;
+
+  const validate = (values: any) => {
+    const errors = {};
+    if (values.humanInput.length > maxlength) {
+      errors.humanInput = `Must be ${maxlength} characters or less.`;
+    }
+    if (values.humanInput.length == 0) {
+      errors.humanInput = "Cannot submit an empty prompt.";
+    }
+    return errors;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      humanInput: '',
+    },
+    validate,
+    onSubmit: (values, actions) => {
+      console.log(`Received ${values}`);
+      const newMessage: Message = {
+        messageType: MessageType.User,
+        index: messages.length,
+        rawContent: "",
+        content: values.humanInput,
+      };
+      setMessages(messages.concat(newMessage));
+      actions.resetForm()
+    },
+  });
+
+
   return (
-    <div>
-      <div className="m-4 p-1 outline outline-2 outline-slate-200 rounded-lg">
+    <div className="flex flex-col justify-center place-content-center align-center">
+      
+      <div className="m-5 sm:m-auto p-3 outline outline-2 outline-slate-200 rounded-lg sm:max-w-[50%] lg:w-96">
         <ul className="flex flex-col">
           {renderedMessages}
         </ul>
       </div>
 
-      <label className="block text-center text-gray-700 text-sm font-bold mb-2">
-        Ask yes/no question here:
-      </label>
-      <div className="flex place-content-center">
-        <input className="max-w-[70%] m-4 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text"  />
-      </div>
+      {/* <h2>Hello! so far there are {totalMessages} total messages</h2> */}
+      
+      <form onSubmit={formik.handleSubmit} className="m-4 flex place-content-center">
+        {/* <label htmlFor="email">Email Address</label> */}
+        {/* <label htmlFor="humanInput" className="block text-center text-gray-700 text-sm font-bold mb-2">
+          Ask yes/no question here:
+        </label> */}
+        <input
+          // max-w-[70%]
+          autocomplete="off" // https://gist.github.com/niksumeiko/360164708c3b326bd1c8
+          className="w-full max-w-xs shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="humanInput"
+          name="humanInput"
+          // type="email"
+          onChange={formik.handleChange}
+          value={formik.values.humanInput}
+          minlength="1"
+          maxlength={maxlength}
+          // disabled={formik.isSubmitting}
+          // autoFocus
+        />
+  
+        <button type="submit"
+          disabled={!formik.isValid}
+          className="bg-violet-400 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-slate-200">
+          Submit</button>
+          {/* <FontAwesomeIcon icon={faArrowUp}/> */}
+        
+        {/* <div className="block">{formik.errors.humanInput}</div> */}
+
+      </form>
+
+      {/* <button onClick={resetMessages} className="bg-slate-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <FontAwesomeIcon icon={faRotateRight} className="fa-fw"/>
+        Reset</button> */}
+
+      {/* <button onClick={reportIssue} className="bg-red-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Report issue</button> */}
+
     </div>
   );
 }
@@ -119,7 +201,7 @@ const Home: NextPage = () => {
         <meta name="theme-color" content="#ffffff" />
       </Head>
 
-      <NavBar />
+      {/* <NavBar /> */}
 
       <main className={styles.main}>
         <div className="">
