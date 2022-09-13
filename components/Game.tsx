@@ -1,4 +1,4 @@
-import { faArrowUp, faCoffee, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faBell, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
@@ -7,8 +7,9 @@ import typingIndicatorStyles from '../styles/TypingIndicator.module.scss';
 import { dummyMessages, Message, MessageType } from './Utils';
 
 export function Game() {
-  const [messages, setMessages] = React.useState(dummyMessages);
+  const [messages, setMessages] = React.useState([]);
   const [waiting, setWaiting] = React.useState(false);
+  const isStub: boolean = false;
 
   // Always auto-scroll to bottom on every re-render
   // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
@@ -20,7 +21,7 @@ export function Game() {
   // const totalMessages = messages.length
   // TODO calculate number of valid messages, win condition, etc
   // setMessages(dummyMessages);
-  const renderedMessages = messages.map(message => {
+  const renderedMessages = messages.map((message: Message) => {
     const mystyle =
       message.messageType === MessageType.User ? styles.bubbleright : styles.bubbleleft;
     return (
@@ -31,7 +32,7 @@ export function Game() {
   });
 
   const resetMessages = () => {
-    setMessages(dummyMessages);
+    setMessages([]);
   };
   const reportIssue = () => {
     alert(`A report has been sent to our engineering team, we'll take a look.`);
@@ -52,7 +53,10 @@ export function Game() {
 
   // https://stackoverflow.com/questions/68684123/why-does-setstate-callback-throw-an-error-state-updates-from-the-usestate-an
   React.useEffect(() => {
-    if (messages.at(-1)?.messageType == MessageType.User) {
+    if (!messages.length) {
+      sendMessageToServer();
+    }
+    else if (messages.at(-1)?.messageType == MessageType.User) {
       sendMessageToServer();
     }
   }, [messages]);
@@ -69,10 +73,11 @@ export function Game() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ messages: messages, isStub: true }),
+      body: JSON.stringify({ messages: messages, isStub: isStub }),
     });
     const data = await response.json();
-    setWaiting(false);
+    console.log('Received response:')
+    console.log(data)
     const newMessage: Message = {
       messageType: MessageType.GPT3,
       index: messages.length,
@@ -81,6 +86,7 @@ export function Game() {
     };
     setMessages(messages.concat(newMessage));
     console.log(`Set new message: ${newMessage.rawContent}`);
+    setWaiting(false);
   }, [messages]);
 
   const formik = useFormik({
@@ -93,7 +99,7 @@ export function Game() {
       const newMessage: Message = {
         messageType: MessageType.User,
         index: messages.length,
-        rawContent: 'Human: ' + values.humanInput,
+        rawContent: 'Questioner: ' + values.humanInput,
         content: values.humanInput,
       };
 
@@ -105,7 +111,7 @@ export function Game() {
 
   return (
     <div className="flex flex-col justify-center place-content-center align-center">
-      <div className="m-5 sm:m-auto p-3 outline outline-2 outline-slate-200 rounded-lg sm:max-w-[50%] lg:w-96">
+      <div className="m-5 sm:m-auto sm:max-w-[50%] lg:w-96 p-3 outline outline-2 outline-slate-200 rounded-lg ">
         <ul className="flex flex-col">{renderedMessages}</ul>
         {waiting && (
           // https://jsfiddle.net/Arlina/gtttgo93/
@@ -118,13 +124,13 @@ export function Game() {
       </div>
 
       <form onSubmit={formik.handleSubmit} className="m-4 flex place-content-center">
-        {/* <label htmlFor="humanInput" className="block text-center text-gray-700 text-sm font-bold mb-2">
+        {/* <label htmlFor="humanInput" className="block text-center text-gray-600 text-sm font-bold mb-2">
               Ask yes/no question here:
             </label> */}
         <input
           // max-w-[70%]
           autoComplete="off" // https://gist.github.com/niksumeiko/360164708c3b326bd1c8
-          className="w-full max-w-xs shadow appearance-none border rounded  py-2 px-3 mx-1 text-gray-700 leading-tight focus:outline-none focus:shadow-lg"
+          className="w-full max-w-xs shadow appearance-none border rounded  py-2 px-3 mx-1 text-gray-600 leading-tight focus:outline-none focus:shadow-lg"
           id="humanInput "
           name="humanInput"
           // type="email"
@@ -145,17 +151,29 @@ export function Game() {
         {/* <div className="block">{formik.errors.humanInput}</div> */}
       </form>
 
-      <button
-        onClick={resetMessages}
-        className="bg-slate-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
-        Reset
-      </button>
+      <div className="flex flex-row m-5 sm:m-auto sm:max-w-[50%] lg:w-96 ">
+        <div className="basis-1/2">
+        <button
+          onClick={resetMessages}
+          className="bg-slate-300 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
+          Reset
+        </button>
+        </div>
+        <div className="basis-1/2">
+          <button onClick={reportIssue} className="mx-1 bg-slate-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          <FontAwesomeIcon icon={faBell} className="fa-fw" />
 
-      {/* <button onClick={reportIssue} className="bg-red-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Report issue</button> */}
+            Report issue</button>
+        </div>
+      </div>
+
+
+
+
 
       {/* {waiting && "Waiting for API response..."} */}
-      <div ref={bottomMessagesRef}></div>
+      <div className="h-16" ref={bottomMessagesRef}></div>
     </div>
   );
 }
