@@ -11,15 +11,15 @@ const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 // req = HTTP incoming message, res = HTTP server response
 export default async function handler(req, res) {
   const messages: Message[] = req.body.messages;
-  const postfix: string = '\nAnswerer:'
+  const isFirstPrompt = !messages.length;
   const isStub: boolean = req.body.isStub;
 
   let response: string;
   let returnCode = 200;
   let answer: string = req.body.answer;
 
-  if (!messages.length) {
-    await sleep(1000);
+  if (isFirstPrompt) {
+    await sleep(2000);
     answer = sample(candidates);
     response = sample(initialBanter);
   }
@@ -27,6 +27,8 @@ export default async function handler(req, res) {
     await sleep(1000);
     response = `Stub message. Answer=${answer}`
   } else {
+    const postfix: string = isFirstPrompt ? '' : '\nAnswerer:'
+    console.log(postfix)
     const basePrompt: string = initialPrompt(answer);
     const prompt: string = basePrompt + mergeMessages(messages) + postfix;
 
@@ -44,7 +46,7 @@ export default async function handler(req, res) {
     console.log(completion)
     console.log(completion.data)
     console.log(completion.data.choices![0].text!)
-    response = completion.data.choices![0].text!;
+    response = 'Answerer:' + completion.data.choices![0].text!;
   }
 
   res.status(returnCode).json({ result: response, answer: answer });

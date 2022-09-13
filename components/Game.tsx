@@ -1,17 +1,20 @@
 import { faArrowUp, faBell, faRotateRight, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFormik } from 'formik';
-import React, { useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import styles from '../styles/Home.module.scss';
 import typingIndicatorStyles from '../styles/TypingIndicator.module.scss';
+import { ModalTailwindUI } from './Modal';
 import { dummyMessages, Message, MessageType } from './Utils';
 
 export function Game() {
   const [messages, setMessages] = React.useState([]);
-  const [waiting, setWaiting] = React.useState(false);
+  const [waiting, setWaiting] = React.useState(true);
   // TODO ideally we would keep answer on the server and tie it to user session
   const [answer, setAnswer] = React.useState();
+  const questionsAsked = messages.filter((m: Message) => m.messageType == MessageType.User)
   const isStub: boolean = true;
+  const [showModal, setShowModal] = React.useState(false);
 
   // Always auto-scroll to bottom on every re-render
   // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
@@ -39,10 +42,19 @@ export function Game() {
   const reportIssue = () => {
     alert(`A report has been sent to our engineering team, we'll take a look.`);
   };
-  const showTranscript = () => {
+  const showDownloadTranscript = () => {
     const totalText = messages.map((message: Message) => message.rawContent).join('\n')
     console.log(totalText);
-    alert(`Check console log.`);
+    // alert(`Check console log.`);
+
+    const rendered = messages.map((message: Message) => {
+    return <Fragment key={message.index}>{message.rawContent}<br /></Fragment>
+    });
+    return rendered
+  }
+  // https://kevinsimper.medium.com/react-newline-to-break-nl2br-a1c240ba746#.l9sbqp5aw
+  const rawTranscript = () => {
+    return messages.map((message: Message) => message.rawContent).join('\n')
   }
 
   const maxlength = 35;
@@ -69,7 +81,7 @@ export function Game() {
   }, [messages]);
 
   const filterRawResponseData = (raw: string) => {
-    return raw.replace('Banter: ', '');
+    return raw.replace('Banter: ', '').replace('Answerer: ', '');
   };
 
   const sendMessageToServer = useCallback(async () => {
@@ -122,7 +134,8 @@ export function Game() {
 
   return (
     <div className="flex flex-col justify-center place-content-center align-center">
-      <div className="m-5 sm:m-auto sm:max-w-[50%] lg:w-96 p-3 outline outline-2 outline-slate-200 rounded-lg ">
+      <div className="mx-5 my-10 sm:mx-auto sm:max-w-[50%] lg:w-96 p-2 outline outline-2 outline-slate-200 rounded-lg ">
+        {/* <div className="text-xs italic ">GPT-3 has entered the chat.</div> */}
         <ul className="flex flex-col">{renderedMessages}</ul>
         {waiting && (
           // https://jsfiddle.net/Arlina/gtttgo93/
@@ -132,9 +145,8 @@ export function Game() {
             <span></span>
           </div>
         )}
-      </div>
 
-      <form onSubmit={formik.handleSubmit} className="m-4 flex place-content-center">
+<form onSubmit={formik.handleSubmit} className="m-4 mt-10 flex place-content-center">
         {/* <label htmlFor="humanInput" className="block text-center text-gray-600 text-sm font-bold mb-2">
               Ask yes/no question here:
             </label> */}
@@ -143,7 +155,8 @@ export function Game() {
           autoComplete="off" // https://gist.github.com/niksumeiko/360164708c3b326bd1c8
           className="w-full max-w-xs shadow appearance-none border rounded  py-2 px-3 mx-1 text-gray-600 leading-tight focus:outline-none focus:shadow-lg"
           id="humanInput "
-          name="humanInput"
+            name="humanInput"
+            placeholder="ask questions here"
           // type="email"
           onChange={formik.handleChange}
           value={formik.values.humanInput}
@@ -162,23 +175,27 @@ export function Game() {
         {/* <div className="block">{formik.errors.humanInput}</div> */}
       </form>
 
-      <div className="flex flex-col m-5 sm:m-auto sm:max-w-[50%] lg:w-96 ">
+      </div>
+
+
+
+      <div className="flex flex-col m-5 my-10 sm:mx-auto sm:max-w-[50%] lg:w-96 ">
         <div className="basis-1/3">
         <button
           onClick={resetMessages}
-          className="m-1 bg-slate-300 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          className="my-1 bg-slate-300 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
           <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
           Reset
         </button>
         </div>
         <div className="basis-1/3">
-          <button onClick={reportIssue} className="m-1 bg-slate-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          <button onClick={reportIssue} className="my-1 bg-slate-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
           <FontAwesomeIcon icon={faBell} className="fa-fw" />
 
             Report issue</button>
         </div>
         <div className="basis-1/3">
-          <button onClick={showTranscript} className="m-1 bg-slate-300 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          <button onClick={() => setShowModal(true)} className="my-1 bg-slate-300 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
           <FontAwesomeIcon icon={faFileDownload} className="fa-fw" />
 
             Download transcript</button>
@@ -186,7 +203,7 @@ export function Game() {
 
       </div>
 
-
+      {showModal && <ModalTailwindUI setShowModal={setShowModal} contents={showDownloadTranscript()} rawContents={rawTranscript()} />}
 
 
       {/* {waiting && "Waiting for API response..."} */}

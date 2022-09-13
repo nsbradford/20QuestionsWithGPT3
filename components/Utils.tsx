@@ -10,7 +10,6 @@ export type UseState<S> = [S, react.Dispatch<react.SetStateAction<S>>];
 export enum MessageType {
   User,
   GPT3,
-  Admin,
 }
 
 export type Message = {

@@ -25,10 +25,10 @@ const Home: NextPage = () => {
           <h2 className="text-lg">Can you defeat the world's smartest AI?</h2>
           <p className="text-xs italic p-4">
             By playing, I agree to the{' '}
-            <a className="hover:underline text-violet-400" href="">
+            <a className="hover:underline text-violet-400" href="https://openai.com/api/policies/terms/" target="_blank">
               terms of service
             </a>
-            , mainly acklowledging the AI might say some pretty wild stuff.
+            , and acklowledge the AI might say wild stuff.
           </p>
         </div>
       </main>
