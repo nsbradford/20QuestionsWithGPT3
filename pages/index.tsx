@@ -23,9 +23,12 @@ const Home: NextPage = () => {
         <div className="">
           <h1 className="text-4xl m-5">Play 20 Questions with GPT-3</h1>
           <h2 className="text-lg">Can you defeat the world's smartest AI?</h2>
-          <p className="text-xs italic p-4">
+          <p className="text-xs italic p-4  ">
             By playing, I agree to the{' '}
-            <a className="hover:underline text-violet-400" href="https://openai.com/api/policies/terms/" target="_blank">
+            <a
+              className="hover:underline text-violet-300"
+              href="https://openai.com/api/policies/terms/"
+              target="_blank">
               terms of service
             </a>
             , and acklowledge the AI might say wild stuff.

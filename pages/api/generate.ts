@@ -22,30 +22,31 @@ export default async function handler(req, res) {
     await sleep(2000);
     answer = sample(candidates);
     response = sample(initialBanter);
-  }
-  else if (isStub) {
+  } else if (isStub) {
     await sleep(1000);
-    response = `Stub message. Answer=${answer}`
+    response = `Stub message. Answer=${answer}`;
   } else {
-    const postfix: string = isFirstPrompt ? '' : '\nAnswerer:'
-    console.log(postfix)
+    const postfix: string = isFirstPrompt ? '' : '\nAnswerer:';
+    console.log(postfix);
     const basePrompt: string = initialPrompt(answer);
     const prompt: string = basePrompt + mergeMessages(messages) + postfix;
 
-    console.log(`******\nSending query to OpenAPI with api key ${process.env.OPENAI_API_KEY}:\n{${prompt}}`);
+    console.log(
+      `******\nSending query to OpenAPI with api key ${process.env.OPENAI_API_KEY}:\n{${prompt}}`
+    );
     const completion = await openai.createCompletion({
-      model: "text-davinci-002",
+      model: 'text-davinci-002',
       prompt: prompt,
       temperature: 0.9,
       max_tokens: 32,
-      stop: ['Questioner:', 'Answerer:']
-      // user: 
+      stop: ['Questioner:', 'Answerer:'],
+      // user:
     });
     // res.status(200).json({ result: completion.data.choices![0].text });
-    console.log(`******\nReceived response from OpenAPI:\n`)
-    console.log(completion)
-    console.log(completion.data)
-    console.log(completion.data.choices![0].text!)
+    console.log(`******\nReceived response from OpenAPI:\n`);
+    console.log(completion);
+    console.log(completion.data);
+    console.log(completion.data.choices![0].text!);
     response = 'Answerer:' + completion.data.choices![0].text!;
   }
 
@@ -62,7 +63,6 @@ export function sample<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-
 const initialBanter: string[] = [
   // Fake
   // 'Banter: Ah, another mere mortal seeks to defeat me.',
@@ -71,7 +71,7 @@ const initialBanter: string[] = [
   'Banter: Ah, another challenger. I see you are eager to be defeated.',
   'Banter: I am prepared.',
   'Banter: This time, I will be victorious.',
-  'Banter: Bring it on, weakling.'
+  'Banter: Bring it on, weakling.',
 ];
 
 // ideas from https://blog.prepscholar.com/20-questions-game
@@ -231,5 +231,5 @@ Answerer: YOU WIN.
 Banter: I wallow in shame. I pray the tides of fate will bear me to more fortuitous contests in the future.
 Questioner: NEW GAME.
 Secret: The correct answer is ${answer}.
-`
-};
+`;
+}

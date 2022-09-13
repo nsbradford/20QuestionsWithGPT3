@@ -1,29 +1,29 @@
 /* define primary colors */
-$money-green: #85bb65;
-$blood-red: #dc143c;
-$light-grey: #D3D3D3;
+// $money-green: #85bb65;
+// $blood-red: #dc143c;
+// $light-grey: #D3D3D3;
 
-:export {
-  moneyGreen: $money-green;
-  bloodRed: $blood-red;
-  lightGrey: $light-grey;
-}
+// :export {
+//   moneyGreen: $money-green;
+//   bloodRed: $blood-red;
+//   lightGrey: $light-grey;
+// }
 
 .main {
-  // min-height: 100vh;
-  // padding: 4rem 0;
-  // flex: 1;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
   text-align: center;
+}
+
+.utilbutton {
+  @apply my-1 bg-slate-300 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-full;
+}
+
+.littletext {
+  @apply flex items-center justify-center text-xs text-gray-400 my-1;
 }
 
 .bubble {
   @apply m-1.5 p-1.5 pl-3 pr-3 text-white rounded-xl max-w-[80%] shadow-md float-left;
   word-wrap: break-word;
-  // outline-5
 }
 
 .bubbleleft {
@@ -38,64 +38,6 @@ $light-grey: #D3D3D3;
   @apply bg-violet-400 float-right;
 }
 
-// To make more like iMessage, checkout:
+// TODO To make more like iMessage, checkout:
 // https://codepen.io/AllThingsSmitty/pen/jommGQ
-
-// .bubble::before,
-// .bubble::after {
-//   bottom: -0.1rem;
-//   content: "";
-//   height: 1rem;
-//   position: absolute;
-// }
-
-// .bubbleleft::before {
-//   border-bottom-right-radius: 0.8rem 0.7rem;
-//   border-left: 1rem solid #e5e5ea;
-//   left: -0.35rem;
-//   transform: translate(0, -0.1rem);
-// }
-
-// .bubbleleft::after {
-//   background-color: #fff;
-//   border-bottom-right-radius: 0.5rem;
-//   left: 20px;
-//   transform: translate(-30px, -2px);
-//   width: 10px;
-// }
-
-
-
-
 // https://stackoverflow.com/questions/19400183/how-to-style-chat-bubble-in-iphone-classic-style-using-css-only
-
-// .bubbleleft {
-//     // border-radius: 20px;
-//   // padding: 8px 15px;
-
-//   margin-top: 5px;
-//   margin-bottom: 5px;
-// }
-
-// .bubbleleft:before {
-//   content: "";
-//   position: absolute;
-//   z-index: 0;
-//   bottom: 0;
-//   left: -7px;
-//   height: 20px;
-//   width: 20px;
-//   background: #EEE;
-//   border-bottom-right-radius: 15px;
-// }
-// .bubbleleft:after {
-//   content: "";
-//   position: absolute;
-//   z-index: 1;
-//   bottom: 0;
-//   left: -10px;
-//   width: 10px;
-//   height: 20px;
-//   background: white;
-//   border-bottom-right-radius: 10px;
-// }
