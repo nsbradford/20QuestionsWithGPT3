@@ -11,28 +11,33 @@ const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 // req = HTTP incoming message, res = HTTP server response
 export default async function handler(req, res) {
   const messages: Message[] = req.body.messages;
-  const answer: string = 'Sloth';//req.body.answer;
-  const basePrompt: string = initialPrompt(answer);
   const postfix: string = '\nAnswerer:'
-
-  const prompt: string = basePrompt + mergeMessages(messages) + postfix;
   const isStub: boolean = req.body.isStub;
+
   let response: string;
   let returnCode = 200;
+  let answer: string = req.body.answer;
 
   if (!messages.length) {
     await sleep(1000);
+    answer = sample(candidates);
     response = sample(initialBanter);
   }
   else if (isStub) {
     await sleep(1000);
-    response = 'Stub message'
+    response = `Stub message. Answer=${answer}`
   } else {
-    console.log(`******\nSending query to OpenAPI:\n{${prompt}}`);
+    const basePrompt: string = initialPrompt(answer);
+    const prompt: string = basePrompt + mergeMessages(messages) + postfix;
+
+    console.log(`******\nSending query to OpenAPI with api key ${process.env.OPENAI_API_KEY}:\n{${prompt}}`);
     const completion = await openai.createCompletion({
       model: "text-davinci-002",
       prompt: prompt,
       temperature: 0.9,
+      max_tokens: 32,
+      stop: ['Questioner:', 'Answerer:']
+      // user: 
     });
     // res.status(200).json({ result: completion.data.choices![0].text });
     console.log(`******\nReceived response from OpenAPI:\n`)
@@ -42,7 +47,7 @@ export default async function handler(req, res) {
     response = completion.data.choices![0].text!;
   }
 
-  res.status(returnCode).json({ result: response });
+  res.status(returnCode).json({ result: response, answer: answer });
 }
 
 export function mergeMessages(messages: Message[]): string {
@@ -58,8 +63,8 @@ export function sample<T>(arr: T[]): T {
 
 const initialBanter: string[] = [
   // Fake
-  'Banter: Ah, another mere mortal seeks to defeat me.',
-  'Banter: Ready your questions, challenger. I have chosen my topic.',
+  // 'Banter: Ah, another mere mortal seeks to defeat me.',
+  // 'Banter: Ready your questions, challenger. I have chosen my topic.',
   // Real
   'Banter: Ah, another challenger. I see you are eager to be defeated.',
   'Banter: I am prepared.',

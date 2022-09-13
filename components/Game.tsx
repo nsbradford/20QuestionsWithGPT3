@@ -1,4 +1,4 @@
-import { faArrowUp, faBell, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faBell, faRotateRight, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
@@ -9,7 +9,9 @@ import { dummyMessages, Message, MessageType } from './Utils';
 export function Game() {
   const [messages, setMessages] = React.useState([]);
   const [waiting, setWaiting] = React.useState(false);
-  const isStub: boolean = false;
+  // TODO ideally we would keep answer on the server and tie it to user session
+  const [answer, setAnswer] = React.useState();
+  const isStub: boolean = true;
 
   // Always auto-scroll to bottom on every re-render
   // https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
@@ -37,6 +39,11 @@ export function Game() {
   const reportIssue = () => {
     alert(`A report has been sent to our engineering team, we'll take a look.`);
   };
+  const showTranscript = () => {
+    const totalText = messages.map((message: Message) => message.rawContent).join('\n')
+    console.log(totalText);
+    alert(`Check console log.`);
+  }
 
   const maxlength = 35;
 
@@ -62,7 +69,7 @@ export function Game() {
   }, [messages]);
 
   const filterRawResponseData = (raw: string) => {
-    return raw;
+    return raw.replace('Banter: ', '');
   };
 
   const sendMessageToServer = useCallback(async () => {
@@ -73,7 +80,7 @@ export function Game() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ messages: messages, isStub: isStub }),
+      body: JSON.stringify({ messages: messages, answer: answer, isStub: isStub }),
     });
     const data = await response.json();
     console.log('Received response:')
@@ -84,6 +91,10 @@ export function Game() {
       rawContent: data.result,
       content: filterRawResponseData(data.result),
     };
+    
+    // only need to update answer on the first message
+    if (answer === undefined) setAnswer(data.answer);
+
     setMessages(messages.concat(newMessage));
     console.log(`Set new message: ${newMessage.rawContent}`);
     setWaiting(false);
@@ -151,23 +162,29 @@ export function Game() {
         {/* <div className="block">{formik.errors.humanInput}</div> */}
       </form>
 
-      <div className="flex flex-row m-5 sm:m-auto sm:max-w-[50%] lg:w-96 ">
-        <div className="basis-1/2">
+      <div className="flex flex-col m-5 sm:m-auto sm:max-w-[50%] lg:w-96 ">
+        <div className="basis-1/3">
         <button
           onClick={resetMessages}
-          className="bg-slate-300 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          className="m-1 bg-slate-300 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
           <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
           Reset
         </button>
         </div>
-        <div className="basis-1/2">
-          <button onClick={reportIssue} className="mx-1 bg-slate-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+        <div className="basis-1/3">
+          <button onClick={reportIssue} className="m-1 bg-slate-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
           <FontAwesomeIcon icon={faBell} className="fa-fw" />
 
             Report issue</button>
         </div>
-      </div>
+        <div className="basis-1/3">
+          <button onClick={showTranscript} className="m-1 bg-slate-300 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+          <FontAwesomeIcon icon={faFileDownload} className="fa-fw" />
 
+            Download transcript</button>
+        </div>
+
+      </div>
 
 
 
