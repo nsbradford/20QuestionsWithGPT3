@@ -62,6 +62,7 @@ export function Game() {
 
   const resetGame = () => {
     setMessages([]);
+    setAnswer(undefined);
     setGameState(GameState.NotStarted);
   };
 
@@ -80,7 +81,10 @@ export function Game() {
       rawContent: data.result,
       content: data.result.replace('Banter: ', '').replace('Answerer: ', ''),
     };
-    if (answer === undefined) setAnswer(data.answer);
+    if (answer === undefined) {
+      console.log(`Set answer: ${data.answer}`);
+      setAnswer(data.answer);
+    }
     setMessages(messages.concat(newMessage));
 
     if (isGameWon(newMessage)) {
@@ -88,7 +92,6 @@ export function Game() {
     } else if (questionsAsked >= questionsLimit) {
       setGameState(GameState.Lost);
     }
-
     setWaiting(false);
   }, [messages]);
 
