@@ -107,7 +107,7 @@ export function Game() {
         )}
         {gameOver && (
           <div className={styles.littletext}>
-            To play again, click <b>Reset</b> below.
+            To play again, click&nbsp;<b>Reset</b>&nbsp;below.
           </div>
         )}
 

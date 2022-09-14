@@ -23,8 +23,8 @@ const Home: NextPage = () => {
         <div className="">
           <h1 className="text-4xl m-5">Play 20 Questions with GPT-3</h1>
           <h2 className="text-lg">Can you defeat the world's smartest AI?</h2>
-          <p className={styles.littletext}>
-            By playing, I agree to the{' '}
+          <p className="text-sm text-gray-400 my-1 mx-4">
+            By playing, you agree to the&nbsp;
             <a
               className="hover:underline text-violet-300"
               href="https://openai.com/api/policies/terms/"

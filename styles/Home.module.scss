@@ -18,8 +18,8 @@
 }
 
 .littletext {
-  @apply flex items-center justify-center text-xs text-gray-400 my-1;
-  white-space: pre-wrap;
+  @apply flex items-center justify-center text-sm text-gray-400 my-1;
+  // white-space: pre-wrap;
 }
 
 .bubble {
