@@ -55,17 +55,31 @@ export const dummyMessages: Message[] = [
   },
 ];
 
-export async function fetchResponseFromAPI(
-  messages: Message[],
-  answer: string | undefined,
-  isStub: boolean
-) {
+export interface RequestPayload {
+  messages: Message[];
+  answer: string | undefined;
+  isStub: boolean;
+}
+
+export interface ResponsePayload {
+  result: string;
+  answer: string;
+}
+
+export function isGameWon(message: Message): boolean {
+  return (
+    message.messageType === MessageType.GPT3 &&
+    message.content.toLocaleUpperCase().includes('YOU WIN')
+  );
+}
+
+export async function fetchResponseFromAPI(payload: RequestPayload) {
   const response: Response = await fetch('/api/generate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ messages: messages, answer: answer, isStub: isStub }),
+    body: JSON.stringify(payload),
   });
   return response;
 }
@@ -81,4 +95,8 @@ export function TypingIndicator() {
       <span></span>
     </div>
   );
+}
+
+export function reportIssue() {
+  alert(`A report has been sent to our engineering team, we'll take a look.`);
 }

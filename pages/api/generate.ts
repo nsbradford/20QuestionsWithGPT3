@@ -10,9 +10,11 @@ const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 // req = HTTP incoming message, res = HTTP server response
 export default async function handler(req, res) {
+  console.log(`Processing request...`);
   const messages: Message[] = req.body.messages;
   const isFirstPrompt = !messages.length;
   const isStub: boolean = req.body.isStub;
+  console.log(messages);
 
   let response: string;
   let returnCode = 200;
@@ -24,10 +26,13 @@ export default async function handler(req, res) {
     response = sample(initialBanter);
   } else if (isStub) {
     await sleep(1000);
-    response = `Stub message. Answer=${answer}`;
+    if (messages.length && messages.at(-1).content.includes(answer)) {
+      response = `Stub message. YOU WIN`;
+    } else {
+      response = `Stub message. Answer=${answer}`;
+    }
   } else {
     const postfix: string = isFirstPrompt ? '' : '\nAnswerer:';
-    console.log(postfix);
     const basePrompt: string = initialPrompt(answer);
     const prompt: string = basePrompt + mergeMessages(messages) + postfix;
 
@@ -44,12 +49,12 @@ export default async function handler(req, res) {
     });
     // res.status(200).json({ result: completion.data.choices![0].text });
     console.log(`******\nReceived response from OpenAPI:\n`);
-    console.log(completion);
-    console.log(completion.data);
-    console.log(completion.data.choices![0].text!);
+    // console.log(completion);
+    // console.log(completion.data);
+    // console.log(completion.data.choices![0].text!);
     response = 'Answerer:' + completion.data.choices![0].text!;
   }
-
+  console.log(`Response: ${response}`);
   res.status(returnCode).json({ result: response, answer: answer });
 }
 

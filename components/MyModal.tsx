@@ -24,15 +24,13 @@ export function MyModal({
   };
 
   // https://kevinsimper.medium.com/react-newline-to-break-nl2br-a1c240ba746#.l9sbqp5aw
-  const rawTranscript = () => {
-    return messages.map((message: Message) => message.rawContent).join('\n');
-  };
+  const rawTranscript = messages.map((message: Message) => message.rawContent).join('\n');
 
   return (
     <ModalTailwindUI
       setShowModal={setShowModal}
       contents={showDownloadTranscript()}
-      rawContents={rawTranscript()}
+      rawContents={rawTranscript}
     />
   );
 }

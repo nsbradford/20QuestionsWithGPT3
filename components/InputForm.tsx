@@ -8,12 +8,14 @@ export function InputForm({
   messages,
   setMessages,
   maxlength,
-  blockInput,
+  waiting,
+  gameOver,
 }: {
   messages: Message[];
   setMessages: (arg0: any) => void;
   maxlength: number;
-  blockInput: boolean;
+  waiting: boolean;
+  gameOver: boolean;
 }) {
   const validate = (values: any) => {
     const errors = {};
@@ -49,15 +51,16 @@ export function InputForm({
         className="w-full max-w-xs shadow appearance-none border rounded  py-2 px-3 mx-1 text-gray-600 leading-tight focus:outline-none focus:shadow-lg"
         id="humanInput "
         name="humanInput"
-        placeholder="ask questions here"
+        placeholder={gameOver ? '' : 'ask questions here'}
         onChange={formik.handleChange}
         value={formik.values.humanInput}
         maxLength={maxlength}
+        disabled={gameOver}
       />
 
       <button
         type="submit"
-        disabled={!formik.isValid || !formik.dirty || blockInput}
+        disabled={!formik.isValid || !formik.dirty || waiting || gameOver}
         className="bg-violet-400 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded focus:outline-slate-400 disabled:bg-slate-200 shadow">
         <FontAwesomeIcon icon={faArrowUp} className="text-base" />
       </button>

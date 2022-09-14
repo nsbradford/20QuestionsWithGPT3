@@ -23,7 +23,7 @@ const Home: NextPage = () => {
         <div className="">
           <h1 className="text-4xl m-5">Play 20 Questions with GPT-3</h1>
           <h2 className="text-lg">Can you defeat the world's smartest AI?</h2>
-          <p className="text-xs italic p-4  ">
+          <p className={styles.littletext}>
             By playing, I agree to the{' '}
             <a
               className="hover:underline text-violet-300"
