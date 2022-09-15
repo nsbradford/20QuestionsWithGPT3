@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     if (messages.length && messages.at(-1).content.includes(answer)) {
       response = `Stub message. YOU WIN`;
     } else {
-      response = `Stub message. Answer=${answer}`;
+      response = `Stub message.`;
     }
   } else {
     const postfix: string = isFirstPrompt ? '' : '\nAnswerer:';

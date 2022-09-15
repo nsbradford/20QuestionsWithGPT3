@@ -21,12 +21,12 @@ const Home: NextPage = () => {
       {/* <NavBar /> */}
       <main className={styles.main}>
         <div className="">
-          <h1 className="text-4xl m-5">Play 20 Questions with GPT-3</h1>
-          <h2 className="text-lg">Can you defeat the world's smartest AI?</h2>
+          <h1 className="text-4xl m-5">Play <a href="https://en.wikipedia.org/wiki/Twenty_questions" target="_blank" className={styles.mainlink}>20 Questions</a> with Sassy GPT-3</h1>
+          <h2 className="text-lg">Can you defeat the world's <a href="https://en.wikipedia.org/wiki/GPT-3" target="_blank" className={styles.mainlink}>smartest AI</a> ?</h2>
           <p className="text-sm text-gray-400 my-1 mx-4">
             By playing, you agree to the&nbsp;
             <a
-              className="hover:underline text-violet-300"
+              className={styles.mainlink}
               href="https://openai.com/api/policies/terms/"
               target="_blank">
               terms of service

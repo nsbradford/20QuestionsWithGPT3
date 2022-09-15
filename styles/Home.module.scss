@@ -13,6 +13,10 @@
   text-align: center;
 }
 
+.mainlink {
+  @apply hover:underline text-violet-300;
+}
+
 .utilbutton {
   @apply my-1 bg-slate-300 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-full;
 }
@@ -23,7 +27,7 @@
 }
 
 .bubble {
-  @apply m-1.5 p-1.5 pl-3 pr-3 text-white rounded-xl max-w-[80%] shadow-md float-left;
+  @apply m-1.5 p-1.5 pl-3 pr-3 text-white rounded-xl max-w-[80%] float-left;
   word-wrap: break-word;
 }
 
