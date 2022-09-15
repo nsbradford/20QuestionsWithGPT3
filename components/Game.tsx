@@ -6,7 +6,6 @@ import { InputForm } from './InputForm';
 import { Messages } from './Messages';
 import { MyModal } from './MyModal';
 import {
-  dummyMessages,
   fetchResponseFromAPI,
   GameState,
   isEnded,
@@ -19,7 +18,11 @@ import {
   TypingIndicator,
 } from './Utils';
 
-export function getHelperText(gameState, questionsAsked, questionsLimit) {
+export function getHelperText(
+  gameState: GameState,
+  questionsAsked: number,
+  questionsLimit: number
+) {
   if (gameState == GameState.Won) {
     return `You won against GPT-3!`; // in ${questionsAsked}/${questionsLimit} questions! Congrats on proving humanity's sovereignty over machines.`
   } else if (gameState == GameState.Lost) {
@@ -30,11 +33,11 @@ export function getHelperText(gameState, questionsAsked, questionsLimit) {
 }
 
 export function Game() {
-  const [messages, setMessages] = React.useState([]);
+  const [messages, setMessages] = React.useState<Array<Message>>([]);
   const [waiting, setWaiting] = React.useState(true);
-  const [gameState, setGameState] = React.useState(GameState.NotStarted);
+  const [gameState, setGameState] = React.useState<GameState>(GameState.NotStarted);
   const [showModal, setShowModal] = React.useState(false);
-  const [answer, setAnswer] = React.useState(); // shortcut, ideally we would keep answer on the server
+  const [answer, setAnswer] = React.useState<string>(); // shortcut, ideally we would keep answer on the server
 
   // constants
   const questionsLimit = 20;
@@ -47,24 +50,12 @@ export function Game() {
   const helperText: string = getHelperText(gameState, questionsAsked, questionsLimit);
 
   // Auto-scroll to bottom https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
-  const bottomMessagesRef = React.useRef(null);
+  const bottomMessagesRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    bottomMessagesRef.current.scrollIntoView({ behavior: 'smooth' });
-  });
-
-  // Make request when user appends a new message.
-  // https://stackoverflow.com/questions/68684123/why-does-setstate-callback-throw-an-error-state-updates-from-the-usestate-an
-  React.useEffect(() => {
-    if (!messages.length || messages.at(-1)?.messageType == MessageType.User) {
-      sendMessageToServer();
+    if (bottomMessagesRef !== null) {
+      bottomMessagesRef.current!.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]);
-
-  const resetGame = () => {
-    setMessages([]);
-    setAnswer(undefined);
-    setGameState(GameState.NotStarted);
-  };
+  });
 
   const sendMessageToServer = useCallback(async () => {
     setWaiting(true);
@@ -93,7 +84,21 @@ export function Game() {
       setGameState(GameState.Lost);
     }
     setWaiting(false);
-  }, [messages]);
+  }, [messages, answer, isStub, questionsAsked]);
+
+  // Make request when user appends a new message.
+  // https://stackoverflow.com/questions/68684123/why-does-setstate-callback-throw-an-error-state-updates-from-the-usestate-an
+  React.useEffect(() => {
+    if (!messages.length || messages.at(-1)?.messageType == MessageType.User) {
+      sendMessageToServer();
+    }
+  }, [messages, sendMessageToServer]);
+
+  const resetGame = () => {
+    setMessages([]);
+    setAnswer(undefined);
+    setGameState(GameState.NotStarted);
+  };
 
   return (
     <div className="flex flex-col justify-center place-content-center align-center">
@@ -153,8 +158,4 @@ export function Game() {
       <div className="h-16" ref={bottomMessagesRef}></div>
     </div>
   );
-}
-
-export function HelperText({ text }: { text: string }) {
-  return <div className={styles.littletext}>GAME OVER</div>;
 }

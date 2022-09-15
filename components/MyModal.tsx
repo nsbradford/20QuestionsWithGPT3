@@ -7,10 +7,10 @@ export function MyModal({
   setShowModal,
 }: {
   messages: Message[];
-  setShowModal: () => boolean;
+  setShowModal: (arg0: boolean) => void;
 }) {
   const showDownloadTranscript = () => {
-    const rendered = messages.map((message: Message) => {
+    const rendered: JSX.Element[] = messages.map((message: Message) => {
       return (
         <Fragment key={message.index}>
           {message.rawContent}

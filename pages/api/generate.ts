@@ -1,5 +1,6 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { Configuration, OpenAIApi } from 'openai';
-import { Message } from './../components/Utils';
+import { Message } from '../../components/Utils';
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -8,8 +9,7 @@ const openai = new OpenAIApi(configuration);
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-// req = HTTP incoming message, res = HTTP server response
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   console.log(`Processing request...`);
   const messages: Message[] = req.body.messages;
   const isFirstPrompt = !messages.length;
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     response = sample(initialBanter);
   } else if (isStub) {
     await sleep(1000);
-    if (messages.length && messages.at(-1).content.includes(answer)) {
+    if (messages.length && messages.at(-1)!.content.includes(answer)) {
       response = `Stub message. YOU WIN`;
     } else {
       response = `Stub message.`;
@@ -47,7 +47,6 @@ export default async function handler(req, res) {
       stop: ['Questioner:', 'Answerer:'],
       // user:
     });
-    // res.status(200).json({ result: completion.data.choices![0].text });
     console.log(`******\nReceived response from OpenAPI:\n`);
     // console.log(completion);
     // console.log(completion.data);

@@ -2,6 +2,16 @@ import typingIndicatorStyles from '../styles/TypingIndicator.module.scss';
 
 import react from 'react';
 
+//==========================================================================================
+// Shared between FE and BE :/
+export type Message = {
+  messageType: MessageType;
+  index: number;
+  rawContent: string;
+  content: string;
+};
+//==========================================================================================
+
 export type UseStateUndefined<S> = [
   S | undefined,
   react.Dispatch<react.SetStateAction<S | undefined>>
@@ -24,13 +34,6 @@ export enum GameState {
 export function isEnded(gameState: GameState): boolean {
   return gameState == GameState.Won || gameState == GameState.Lost;
 }
-
-export type Message = {
-  messageType: MessageType;
-  index: number;
-  rawContent: string;
-  content: string;
-};
 
 export const dummyMessages: Message[] = [
   {

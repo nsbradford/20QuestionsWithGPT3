@@ -1,7 +1,13 @@
-import React, { useCallback } from 'react';
-
 // https://tailwindui.com/components/application-ui/overlays/modals
-export function ModalTailwindUI({ setShowModal, contents, rawContents }) {
+export function ModalTailwindUI({
+  setShowModal,
+  contents,
+  rawContents,
+}: {
+  setShowModal: (arg0: boolean) => void;
+  contents: JSX.Element[];
+  rawContents: string;
+}): JSX.Element {
   return (
     <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       {/* <!--

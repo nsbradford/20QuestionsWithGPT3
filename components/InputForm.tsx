@@ -4,6 +4,10 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { Message, MessageType } from './Utils';
 
+interface ErrorType {
+  humanInput?: string;
+}
+
 export function InputForm({
   messages,
   setMessages,
@@ -18,7 +22,7 @@ export function InputForm({
   gameOver: boolean;
 }) {
   const validate = (values: any) => {
-    const errors = {};
+    const errors: ErrorType = {};
     if (values.humanInput.length > maxlength) {
       errors.humanInput = `Must be ${maxlength} characters or less.`;
     } else if (values.humanInput.length == 0) {
