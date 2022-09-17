@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (isFirstPrompt) {
     await sleep(2000);
-    answer = sample(candidates);
+    answer = 'New York City'; //sample(candidates);
     response = sample(initialBanter);
     console.log(`Chose answer: ${answer}`)
   } else if (isStub) {
@@ -40,19 +40,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(
       `******\nSending query to OpenAPI with api key ${process.env.OPENAI_API_KEY}:\n{${prompt}}`
     );
-    const completion = await openai.createCompletion({
-      model: 'text-davinci-002',
-      prompt: prompt,
-      temperature: 0.9,
-      max_tokens: 32,
-      stop: ['Questioner:', 'Answerer:'],
-      // user:
-    });
+    // const completion = await openai.createCompletion({
+    //   model: 'text-davinci-002',
+    //   prompt: prompt,
+    //   temperature: 0.9,
+    //   max_tokens: 32,
+    //   stop: ['Questioner:', 'Answerer:'],
+    //   // user:
+    // });
     console.log(`******\nReceived response from OpenAPI:\n`);
+    await sleep(1523);
     // console.log(completion);
     // console.log(completion.data);
     // console.log(completion.data.choices![0].text!);
-    response = 'Answerer:' + completion.data.choices![0].text!;
+    response = 'Answerer: No. You humans are so predictable.'// + completion.data.choices![0].text!;
   }
   console.log(`Response: ${response}`);
   res.status(returnCode).json({ result: response, answer: answer });

@@ -133,7 +133,7 @@ export function Game() {
           styles.littletext
         }>{`You have asked ${questionsAsked}/${questionsLimit} questions.`}</div>
 
-      <div className="flex flex-col m-5 my-10 sm:mx-auto sm:max-w-[50%] lg:w-96 ">
+      {/* <div className="flex flex-col m-5 my-10 sm:mx-auto sm:max-w-[50%] lg:w-96 ">
         <div className="basis-1/3">
           <button onClick={resetGame} className={styles.utilbutton}>
             <FontAwesomeIcon icon={faRotateRight} className="fa-fw" />
@@ -152,7 +152,7 @@ export function Game() {
             Download transcript
           </button>
         </div>
-      </div>
+      </div> */}
 
       {showModal && <MyModal messages={messages} setShowModal={setShowModal} />}
       <div className="h-16" ref={bottomMessagesRef}></div>

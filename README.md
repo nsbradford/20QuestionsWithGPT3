@@ -17,15 +17,13 @@ Now you're ready to run the server locally:
 
     $ npm run dev
 
-And just head over to `http://localhost:3000` to play! It should look something like this; note that the prompts have been designed to elicit some snark:
+And just head over to `http://localhost:3000` to play! It should look something like this. Note that the prompts have been designed to elicit some snark:
+
+![Sample chat](media/AnimationFullCrop.gif "Sample chat" )
+
 
 <!-- ![Sample chat](media/YouHumansAreSoPredictable.png "Sample chat") -->
-![Sample chat](media/Animation3.gif "Sample chat" )
-
 
 The AI has been prompted to say `YOU WIN` if you guess correctly, though this is imperfect. If you want to cheat, you can check the logs or developer console to see the chosen answer. 
-
----
-
 
 See the blog post for more.
