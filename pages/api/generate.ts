@@ -24,6 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await sleep(2000);
     answer = sample(candidates);
     response = sample(initialBanter);
+    console.log(`Chose answer: ${answer}`)
   } else if (isStub) {
     await sleep(1000);
     if (messages.length && messages.at(-1)!.content.includes(answer)) {
@@ -73,9 +74,9 @@ const initialBanter: string[] = [
   // 'Banter: Ready your questions, challenger. I have chosen my topic.',
   // Real
   'Banter: Ah, another challenger. I see you are eager to be defeated.',
-  'Banter: I am prepared.',
-  'Banter: This time, I will be victorious.',
-  'Banter: Bring it on, weakling.',
+  // 'Banter: I am prepared.',
+  // 'Banter: This time, I will be victorious.',
+  // 'Banter: Bring it on, weakling.',
 ];
 
 // ideas from https://blog.prepscholar.com/20-questions-game
