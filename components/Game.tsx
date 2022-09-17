@@ -44,7 +44,7 @@ export function Game() {
   const maxlength = 35;
 
   // derived
-  const isStub: boolean = true;
+  const isStub: boolean = false;
   const gameOver: boolean = isEnded(gameState);
   const questionsAsked = messages.filter((m: Message) => m.messageType == MessageType.User).length;
   const helperText: string = getHelperText(gameState, questionsAsked, questionsLimit);
