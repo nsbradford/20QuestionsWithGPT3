@@ -1,21 +1,35 @@
+import { Metadata } from 'next';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Game } from '../components/Game';
 import styles from '../styles/Home.module.scss';
+export const metadata: Metadata = {
+  title: `20 Questions with GPT-3`,
+  icons: {
+    icon: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  themeColor: [
+    {
+      color: '#ffffff',
+    },
+  ],
+};
 
 const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>20 Questions with GPT-3</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
+        {/* title was removed */}
+        {/* link was removed */}
+        {/* link was removed */}
+        {/* link was removed */}
+        {/* link was removed */}
+        {/* link was removed */}
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
+        {/* meta was removed */}
       </Head>
 
       {/* <NavBar /> */}
